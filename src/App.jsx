@@ -1,9 +1,10 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+let highscoreArr = [];
 
 function App() {
   const [gifs, setGifs] = useState([]);
-  const [score, setScore] = useState(0);
-  const [highscore, setHighscore] = useState(0);
+  let [score, setScore] = useState(0);
+  let [highscore, setHighscore] = useState(0);
 
   useEffect(() => {
     getGIFs();
@@ -23,6 +24,21 @@ function App() {
       setGifs(data.data);
     } catch (error) {
       console.error(error);
+    }
+  }
+  function handleGame(e) {
+    console.log(e.target);
+    console.log(highscoreArr);
+    shuffleArray();
+    if (highscoreArr.includes(e.target.id)) {
+      highscoreArr = [];
+      if (score > highscore) {
+        setHighscore(score);
+      }
+      setScore(0);
+    } else {
+      highscoreArr.push(e.target.id);
+      setScore((prev) => prev + 1);
     }
   }
 
@@ -48,8 +64,8 @@ function App() {
           </p>
         </div>
         <div>
-          <p>Score: 0</p>
-          <p>Your Highscore: 0</p>
+          <p>Score: {score}</p>
+          <p>Your Highscore: {highscore}</p>
         </div>
       </div>
       <div>
@@ -57,9 +73,10 @@ function App() {
           <button>
             <img
               key={gif.id}
+              id={gif.id}
               src={gif.images.fixed_height.url}
               alt={gif.title}
-              onClick={shuffleArray}
+              onClick={(e) => handleGame(e)}
             />
           </button>
         ))}
