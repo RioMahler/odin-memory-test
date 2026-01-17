@@ -2,6 +2,9 @@ import { use, useEffect, useState } from "react";
 
 function App() {
   const [gifs, setGifs] = useState([]);
+  const [score, setScore] = useState(0);
+  const [highscore, setHighscore] = useState(0);
+
   useEffect(() => {
     getGIFs();
   }, []);
@@ -17,10 +20,21 @@ function App() {
       }
 
       const data = await response.json();
-      setGifs(data.data); // 👈 THIS is the important part
+      setGifs(data.data);
     } catch (error) {
       console.error(error);
     }
+  }
+
+  function shuffleArray() {
+    const nextOrder = [...gifs];
+    for (let i = nextOrder.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      let k = nextOrder[i];
+      nextOrder[i] = nextOrder[j];
+      nextOrder[j] = k;
+    }
+    setGifs(nextOrder);
   }
 
   return (
@@ -40,7 +54,14 @@ function App() {
       </div>
       <div>
         {gifs.map((gif) => (
-          <img key={gif.id} src={gif.images.fixed_height.url} alt={gif.title} />
+          <button>
+            <img
+              key={gif.id}
+              src={gif.images.fixed_height.url}
+              alt={gif.title}
+              onClick={shuffleArray}
+            />
+          </button>
         ))}
       </div>
     </>
